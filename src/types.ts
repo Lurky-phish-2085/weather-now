@@ -23,6 +23,7 @@ export type WeatherData = {
     is_day: string;
     precipitation: string;
     weather_code: string;
+    wind_speed_10m: string;
   };
   current: {
     time: string;
@@ -33,5 +34,6 @@ export type WeatherData = {
     is_day: number;
     precipitation: number;
     weather_code: number;
+    wind_speed_10m: number;
   };
 };

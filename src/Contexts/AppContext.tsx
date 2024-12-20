@@ -1,6 +1,9 @@
 import { createContext, ReactNode, useContext, useState } from "react";
+import { Location } from "../types";
 
 type AppContextType = {
+  location: Location;
+  selectLocation: (location: Location) => void;
   theme: string;
   switchTheme: () => void;
 };
@@ -18,8 +21,13 @@ const AppContextProvider = ({
   children,
   ...props
 }: AppContextProviderProps) => {
-  const [theme, setTheme] = useState(ui("mode") as string);
+  const [location, setLocation] = useState({} as Location);
 
+  const selectLocation = (location: Location) => {
+    setLocation(location);
+  };
+
+  const [theme, setTheme] = useState(ui("mode") as string);
   const switchTheme = () => {
     const newMode = theme === "dark" ? "light" : "dark";
     setTheme(newMode);
@@ -29,6 +37,8 @@ const AppContextProvider = ({
   return (
     <AppContext.Provider
       value={{
+        location,
+        selectLocation,
         theme,
         switchTheme,
         ...props,

@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useState } from "react";
 import { Location } from "../types";
 
 type AppContextType = {
@@ -15,7 +15,6 @@ type AppContextProviderProps = {
 };
 
 const AppContext = createContext({} as AppContextType);
-const useAppContext = () => useContext(AppContext);
 
 const AppContextProvider = ({
   children,
@@ -49,4 +48,4 @@ const AppContextProvider = ({
   );
 };
 
-export { AppContextProvider, useAppContext };
+export { AppContext, AppContextProvider };

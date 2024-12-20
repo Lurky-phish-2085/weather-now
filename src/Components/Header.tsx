@@ -1,7 +1,8 @@
 import "beercss";
 import "material-dynamic-colors";
 import HeaderMoreButton from "./HeaderMoreButton";
-import HeaderLogoLink from "./LogoLink";
+import HeaderLogoLink from "./HeaderLogoLink";
+import SearchInput from "./SearchInput";
 
 function Header() {
   return (
@@ -9,6 +10,7 @@ function Header() {
       <header className="transparent">
         <nav>
           <HeaderLogoLink />
+          <SearchInput />
           <HeaderMoreButton />
         </nav>
       </header>

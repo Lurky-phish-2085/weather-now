@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAppContext } from "../Contexts/hooks";
+import { TemperatureUnits } from "../api/enums";
 
 function HeaderMoreButton() {
   const { theme, switchTheme, temperatureUnit, switchTempUnit } =
@@ -20,7 +21,7 @@ function HeaderMoreButton() {
             <nav onClick={switchTempUnit}>
               <i>device_thermostat</i>
               <a>
-                {temperatureUnit === "celsius" ? (
+                {temperatureUnit === TemperatureUnits.CELSIUS ? (
                   <span>Switch to F&deg; unit</span>
                 ) : (
                   <span>Switch to C&deg; unit</span>

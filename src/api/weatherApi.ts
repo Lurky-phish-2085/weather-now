@@ -1,39 +1,43 @@
 import axios from "axios";
 import { Location, WeatherData } from "../types";
+import {
+  PrecipitationUnits,
+  TemperatureUnits,
+  TimeFormats,
+  WindSpeedUnits,
+} from "./enums";
 
-type GetWeatherForecastOptions = {
-  temperatureUnit?: "celsius" | "fahrenheit";
-  windSpeedUnit?: "kmh" | "ms" | "mph" | "kn";
-  precipitationUnit?: "mm" | "inch";
-  timeFormat?: "iso8601" | "unixtime";
-};
-
-const GET_WEATHER_FORECAST_DEFAULT_OPTIONS: GetWeatherForecastOptions = {
-  temperatureUnit: "celsius",
-  windSpeedUnit: "kmh",
-  precipitationUnit: "mm",
-  timeFormat: "iso8601",
+type WeatherUnitOptions = {
+  temperatureUnit?: TemperatureUnits;
+  windSpeedUnit?: WindSpeedUnits;
+  precipitationUnit?: PrecipitationUnits;
+  timeFormat?: TimeFormats;
 };
 
 const API_URL =
   "https://api.open-meteo.com/v1/forecast?&current=temperature_2m,is_day&hourly=temperature_2m&daily=temperature_2m_max,temperature_2m_min";
 
+const WEATHER_UNITS_DEFAULTS: WeatherUnitOptions = {
+  temperatureUnit: TemperatureUnits.CELSIUS,
+  windSpeedUnit: WindSpeedUnits.KILOMETERS_PER_HOUR,
+  precipitationUnit: PrecipitationUnits.MILLIMETER,
+  timeFormat: TimeFormats.ISO8601,
+};
+
 export const getWeatherForecast = async (
   location: Location,
-  options = GET_WEATHER_FORECAST_DEFAULT_OPTIONS
+  options = WEATHER_UNITS_DEFAULTS
 ): Promise<WeatherData> => {
   const longitude = `&longitude=${location.lon}`;
   const latitude = `&latitude=${location.lat}`;
   const temperatureUnit = `&temperature_unit=${
-    options.temperatureUnit ||
-    GET_WEATHER_FORECAST_DEFAULT_OPTIONS.temperatureUnit
+    options.temperatureUnit || WEATHER_UNITS_DEFAULTS.temperatureUnit
   }`;
   const windSpeedUnit = `&wind_speed_unit=${
-    options.windSpeedUnit || GET_WEATHER_FORECAST_DEFAULT_OPTIONS.windSpeedUnit
+    options.windSpeedUnit || WEATHER_UNITS_DEFAULTS.windSpeedUnit
   }`;
   const precipitationUnit = `&precipitation_unit=${
-    options.precipitationUnit ||
-    GET_WEATHER_FORECAST_DEFAULT_OPTIONS.precipitationUnit
+    options.precipitationUnit || WEATHER_UNITS_DEFAULTS.precipitationUnit
   }`;
   const timezone = `&timezone=${Intl.DateTimeFormat()
     .resolvedOptions()

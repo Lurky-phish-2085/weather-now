@@ -1,10 +1,11 @@
 import { createContext, ReactNode, useState } from "react";
+import { TemperatureUnits } from "../api/enums";
 import { Location } from "../types";
 
 type AppContextType = {
   location: Location;
   selectLocation: (location: Location) => void;
-  temperatureUnit: "celsius" | "fahrenheit";
+  temperatureUnit: TemperatureUnits;
   switchTempUnit: () => void;
   theme: string;
   switchTheme: () => void;
@@ -27,11 +28,15 @@ export const AppContextProvider = ({
     setLocation(location);
   };
 
-  const [temperatureUnit, setTemperatureUnit] = useState<
-    "celsius" | "fahrenheit"
-  >("celsius");
+  const [temperatureUnit, setTemperatureUnit] = useState(
+    TemperatureUnits.CELSIUS
+  );
   const switchTempUnit = () => {
-    const newUnit = temperatureUnit === "celsius" ? "fahrenheit" : "celsius";
+    const newUnit =
+      temperatureUnit === TemperatureUnits.CELSIUS
+        ? TemperatureUnits.FAHRENHEIT
+        : TemperatureUnits.CELSIUS;
+
     setTemperatureUnit(newUnit);
   };
 

@@ -14,9 +14,9 @@ type AppContextProviderProps = {
   [key: string]: any;
 };
 
-const AppContext = createContext({} as AppContextType);
+export const AppContext = createContext({} as AppContextType);
 
-const AppContextProvider = ({
+export const AppContextProvider = ({
   children,
   ...props
 }: AppContextProviderProps) => {
@@ -47,5 +47,3 @@ const AppContextProvider = ({
     </AppContext.Provider>
   );
 };
-
-export { AppContext, AppContextProvider };

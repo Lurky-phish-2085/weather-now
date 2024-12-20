@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useAppContext from "../Contexts/hooks/useAppContext";
+import { useAppContext } from "../Contexts/hooks";
 
 function HeaderMoreButton() {
   const { theme, switchTheme } = useAppContext();

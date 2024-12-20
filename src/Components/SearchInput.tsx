@@ -5,7 +5,7 @@ import "material-dynamic-colors";
 import { ChangeEvent, useMemo, useState } from "react";
 import { searchLocations } from "../api/geocodingApi";
 import { Location } from "../types";
-import useAppContext from "../Contexts/hooks/useAppContext";
+import { useAppContext } from "../Contexts/hooks";
 
 function SearchInput() {
   const { selectLocation } = useAppContext();

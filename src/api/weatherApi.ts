@@ -15,7 +15,11 @@ type WeatherUnitOptions = {
 };
 
 const API_URL =
-  "https://api.open-meteo.com/v1/forecast?current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code&hourly=temperature_2m";
+  "https://api.open-meteo.com/v1" +
+  "/forecast?" +
+  "current=temperature_2m,relative_humidity_2m," +
+  "apparent_temperature,is_day,precipitation,weather_code" +
+  "&hourly=temperature_2m";
 
 const WEATHER_UNITS_DEFAULTS: WeatherUnitOptions = {
   temperatureUnit: TemperatureUnits.CELSIUS,
@@ -44,7 +48,13 @@ export const getWeatherForecast = async (
     .timeZone.replace("/", "%2F")}`;
 
   const response = await axios.get(
-    `${API_URL}${longitude}${latitude}${timezone}${temperatureUnit}${windSpeedUnit}${precipitationUnit}`
+    `${API_URL}` +
+      `${longitude}` +
+      `${latitude}` +
+      `${timezone}` +
+      `${temperatureUnit}` +
+      `${windSpeedUnit}` +
+      `${precipitationUnit}`
   );
 
   return response.data;

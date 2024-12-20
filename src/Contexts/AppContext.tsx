@@ -4,6 +4,8 @@ import { Location } from "../types";
 type AppContextType = {
   location: Location;
   selectLocation: (location: Location) => void;
+  temperatureUnit: "celsius" | "fahrenheit";
+  switchTempUnit: () => void;
   theme: string;
   switchTheme: () => void;
 };
@@ -21,9 +23,16 @@ export const AppContextProvider = ({
   ...props
 }: AppContextProviderProps) => {
   const [location, setLocation] = useState({} as Location);
-
   const selectLocation = (location: Location) => {
     setLocation(location);
+  };
+
+  const [temperatureUnit, setTemperatureUnit] = useState<
+    "celsius" | "fahrenheit"
+  >("celsius");
+  const switchTempUnit = () => {
+    const newUnit = temperatureUnit === "celsius" ? "fahrenheit" : "celsius";
+    setTemperatureUnit(newUnit);
   };
 
   const [theme, setTheme] = useState(ui("mode") as string);
@@ -38,6 +47,8 @@ export const AppContextProvider = ({
       value={{
         location,
         selectLocation,
+        temperatureUnit,
+        switchTempUnit,
         theme,
         switchTheme,
         ...props,

@@ -15,7 +15,7 @@ type WeatherUnitOptions = {
 };
 
 const API_URL =
-  "https://api.open-meteo.com/v1/forecast?&current=temperature_2m,is_day&hourly=temperature_2m&daily=temperature_2m_max,temperature_2m_min";
+  "https://api.open-meteo.com/v1/forecast?current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code&hourly=temperature_2m";
 
 const WEATHER_UNITS_DEFAULTS: WeatherUnitOptions = {
   temperatureUnit: TemperatureUnits.CELSIUS,

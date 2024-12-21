@@ -58,6 +58,7 @@ function WeatherForecast() {
           <p>
             <strong>
               Precip: {data.current.precipitation}
+              <span>&thinsp;</span>
               {data.current_units.precipitation}
             </strong>
           </p>

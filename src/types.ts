@@ -37,3 +37,8 @@ export type WeatherData = {
     wind_speed_10m: number;
   };
 };
+
+export type CountryIsData = {
+  country: string;
+  ip: string;
+};

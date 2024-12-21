@@ -1,11 +1,13 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import isEmpty from "lodash.isempty";
 import { useEffect } from "react";
 import { useAppContext } from "../Contexts/hooks";
+import { getCountryByIP } from "../api/ipToCountryApi";
 import { getWeatherForecast } from "../api/weatherApi";
-import isEmpty from "lodash.isempty";
+import { searchLocations } from "../api/geocodingApi";
 
 function WeatherForecast() {
-  const { location, temperatureUnit } = useAppContext();
+  const { location, selectLocation, temperatureUnit } = useAppContext();
 
   const queryClient = useQueryClient();
   const { isLoading, data } = useQuery({
@@ -19,6 +21,27 @@ function WeatherForecast() {
       queryKey: ["weather-forecast-fetch", location],
     });
   }, [location, temperatureUnit, queryClient]);
+
+  const countryOfIP = useQuery({
+    queryKey: ["ip-to-country"],
+    queryFn: () => getCountryByIP(),
+    enabled: isEmpty(location),
+  });
+  const initialLocation = useMutation({
+    mutationFn: searchLocations,
+    onSuccess: (data) => {
+      const userIPCountry = data[0];
+      selectLocation(userIPCountry);
+      queryClient.removeQueries({ queryKey: ["ip-to-country"] });
+    },
+  });
+
+  useEffect(() => {
+    if (!isEmpty(location)) return;
+    if (!countryOfIP.data) return;
+
+    initialLocation.mutate(countryOfIP.data.country);
+  }, [countryOfIP.data]);
 
   return (
     <>

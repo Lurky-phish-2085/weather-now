@@ -1,27 +1,21 @@
+import "beercss";
+import "material-dynamic-colors";
+import Header from "./Components/Header";
+import { AppContextProvider } from "./Contexts/AppContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import "./App.css";
-import GeoSearch from "./Components/GeoSearch";
-import Content from "./Components/Content";
-import { useState } from "react";
-import { Location } from "./types";
+import Main from "./Components/Main";
 
 const queryClient = new QueryClient();
 
 function App() {
-  const [location, setLocation] = useState({} as Location);
-
   return (
     <>
-      <QueryClientProvider client={queryClient}>
-        <h1>Search</h1>
-        <GeoSearch
-          onSearch={(location) => {
-            setLocation(location);
-          }}
-        />
-        <h1>Weather Data</h1>
-        <Content place={location} />
-      </QueryClientProvider>
+      <AppContextProvider>
+        <QueryClientProvider client={queryClient}>
+          <Header />
+          <Main />
+        </QueryClientProvider>
+      </AppContextProvider>
     </>
   );
 }

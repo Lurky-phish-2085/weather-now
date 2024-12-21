@@ -15,7 +15,6 @@ export enum PrecipitationUnits {
   INCH = "inch",
 }
 
-//timeFormat?: "iso8601" | "unixtime";
 export enum TimeFormats {
   ISO8601 = "iso8601",
   UNIX = "unixtime",

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { CountryData } from "../types";
 
-const API_URL = "/countries.json";
+const API_URL = `${import.meta.env.BASE_URL}/countries.json`;
 
 export const getCountryData = async (
   countryName: string

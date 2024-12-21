@@ -38,7 +38,13 @@ export type WeatherData = {
   };
 };
 
-export type CountryIsData = {
+export type CountryIPData = {
   country: string;
   ip: string;
+};
+
+export type CountryData = {
+  name: string;
+  capitalCity: string;
+  code: string;
 };

@@ -2,9 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import isEmpty from "lodash.isempty";
 import { useEffect } from "react";
 import { useAppContext } from "../Contexts/hooks";
+import { getCapitalCityOf } from "../api/countryApi";
+import { searchLocations } from "../api/geocodingApi";
 import { getCountryByIP } from "../api/ipToCountryApi";
 import { getWeatherForecast } from "../api/weatherApi";
-import { searchLocations } from "../api/geocodingApi";
 
 function WeatherForecast() {
   const { location, selectLocation, temperatureUnit } = useAppContext();
@@ -37,10 +38,16 @@ function WeatherForecast() {
   });
 
   useEffect(() => {
+    const setInitialLocation = async (countryName: string) => {
+      const capitalCity = await getCapitalCityOf(countryName);
+      initialLocation.mutate(
+        `${capitalCity ? capitalCity : ""} ${countryName}`
+      );
+    };
     if (!isEmpty(location)) return;
     if (!countryOfIP.data) return;
 
-    initialLocation.mutate(countryOfIP.data.country);
+    setInitialLocation(countryOfIP.data.country);
   }, [countryOfIP.data]);
 
   return (

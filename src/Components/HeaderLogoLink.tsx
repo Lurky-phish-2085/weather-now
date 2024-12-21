@@ -2,7 +2,7 @@ function HeaderLogoLink() {
   return (
     <>
       <h5 className="max left-align">
-        <a href="/">Weather Now</a>
+        <a href={import.meta.env.BASE_URL}>Weather Now</a>
       </h5>
     </>
   );

@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import useLocalStorageState from "use-local-storage-state";
 import usePrefersColorScheme from "use-prefers-color-scheme";
+import useSessionStorageState from "use-session-storage-state";
 import { TemperatureUnits } from "../api/enums";
 import { Location } from "../types";
 
@@ -27,10 +28,18 @@ export const AppContextProvider = ({
   children,
   ...props
 }: AppContextProviderProps) => {
+  const [selectedLocation, setSelectedLocation] =
+    useSessionStorageState<Location>("location");
+
   const [location, setLocation] = useState({} as Location);
   const selectLocation = (location: Location) => {
-    setLocation(location);
+    setSelectedLocation(location);
   };
+
+  useEffect(() => {
+    const newLocation = selectedLocation ? selectedLocation : location;
+    setLocation(newLocation);
+  }, [selectedLocation, location]);
 
   const defaultTempUnit = TemperatureUnits.CELSIUS;
   const [selectedTempUnit, setSelectedTempUnit] =

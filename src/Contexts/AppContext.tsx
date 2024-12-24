@@ -1,4 +1,6 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
+import useLocalStorageState from "use-local-storage-state";
+import usePrefersColorScheme from "use-prefers-color-scheme";
 import { TemperatureUnits } from "../api/enums";
 import { Location } from "../types";
 
@@ -10,6 +12,8 @@ type AppContextType = {
   theme: string;
   switchTheme: () => void;
 };
+
+type Theme = "dark" | "light" | "no-preference";
 
 type AppContextProviderProps = {
   children: ReactNode;
@@ -40,12 +44,25 @@ export const AppContextProvider = ({
     setTemperatureUnit(newUnit);
   };
 
-  const [theme, setTheme] = useState(ui("mode") as string);
+  const systemPreferredTheme = usePrefersColorScheme();
+  const defaultTheme =
+    systemPreferredTheme || systemPreferredTheme === "no-preference"
+      ? "light"
+      : systemPreferredTheme;
+
+  const [selectedTheme, setSelectedTheme] =
+    useLocalStorageState<Theme>("theme");
+
+  const [theme, setTheme] = useState<Theme>("light");
   const switchTheme = () => {
-    const newMode = theme === "dark" ? "light" : "dark";
-    setTheme(newMode);
-    ui("mode", newMode);
+    setSelectedTheme(theme === "dark" ? "light" : "dark");
   };
+
+  useEffect(() => {
+    const theme = selectedTheme ? selectedTheme : defaultTheme;
+    setTheme(theme);
+    ui("mode", theme);
+  }, [selectedTheme, defaultTheme]);
 
   return (
     <AppContext.Provider

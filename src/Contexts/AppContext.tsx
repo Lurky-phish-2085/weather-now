@@ -32,17 +32,24 @@ export const AppContextProvider = ({
     setLocation(location);
   };
 
-  const [temperatureUnit, setTemperatureUnit] = useState(
-    TemperatureUnits.CELSIUS
-  );
+  const defaultTempUnit = TemperatureUnits.CELSIUS;
+  const [selectedTempUnit, setSelectedTempUnit] =
+    useLocalStorageState<TemperatureUnits>("temp_unit");
+
+  const [temperatureUnit, setTemperatureUnit] = useState(defaultTempUnit);
   const switchTempUnit = () => {
     const newUnit =
       temperatureUnit === TemperatureUnits.CELSIUS
         ? TemperatureUnits.FAHRENHEIT
         : TemperatureUnits.CELSIUS;
 
-    setTemperatureUnit(newUnit);
+    setSelectedTempUnit(newUnit);
   };
+
+  useEffect(() => {
+    const unit = selectedTempUnit ? selectedTempUnit : defaultTempUnit;
+    setTemperatureUnit(unit);
+  }, [selectedTempUnit, defaultTempUnit]);
 
   const systemPreferredTheme = usePrefersColorScheme();
   const defaultTheme =

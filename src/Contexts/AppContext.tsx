@@ -1,3 +1,4 @@
+import isEmpty from "lodash.isempty";
 import { createContext, ReactNode, useEffect, useState } from "react";
 import useLocalStorageState from "use-local-storage-state";
 import usePrefersColorScheme from "use-prefers-color-scheme";
@@ -8,6 +9,7 @@ import { Location } from "../types";
 type AppContextType = {
   location: Location;
   selectLocation: (location: Location) => void;
+  searches: Location[];
   temperatureUnit: TemperatureUnits;
   switchTempUnit: () => void;
   theme: string;
@@ -41,6 +43,33 @@ export const AppContextProvider = ({
     setLocation(newLocation);
   }, [selectedLocation, location]);
 
+  const [recentSearches, setRecentSearches] = useLocalStorageState<Location[]>(
+    "searches",
+    { defaultValue: [] }
+  );
+
+  const [searches, setSearches] = useState(recentSearches);
+
+  useEffect(() => {
+    if (!location) {
+      return;
+    }
+
+    let updatedSearches: Location[] = recentSearches ? recentSearches : [];
+    const locationExists = updatedSearches.filter(
+      (data) => data.display_name === location.display_name
+    ).length;
+
+    if (locationExists) {
+      return;
+    }
+    updatedSearches = updatedSearches.filter((data) => !isEmpty(data));
+    updatedSearches.push(location);
+
+    setSearches(updatedSearches);
+    setRecentSearches(updatedSearches);
+  }, [location]);
+
   const defaultTempUnit = TemperatureUnits.CELSIUS;
   const [selectedTempUnit, setSelectedTempUnit] =
     useLocalStorageState<TemperatureUnits>("temp_unit");
@@ -61,10 +90,7 @@ export const AppContextProvider = ({
   }, [selectedTempUnit, defaultTempUnit]);
 
   const systemPreferredTheme = usePrefersColorScheme();
-  const defaultTheme =
-    systemPreferredTheme || systemPreferredTheme === "no-preference"
-      ? "light"
-      : systemPreferredTheme;
+  const defaultTheme = systemPreferredTheme || "light";
 
   const [selectedTheme, setSelectedTheme] =
     useLocalStorageState<Theme>("theme");
@@ -85,6 +111,7 @@ export const AppContextProvider = ({
       value={{
         location,
         selectLocation,
+        searches,
         temperatureUnit,
         switchTempUnit,
         theme,

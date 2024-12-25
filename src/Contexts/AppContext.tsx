@@ -57,7 +57,7 @@ export const AppContextProvider = ({
 
     let updatedSearches: Location[] = recentSearches ? recentSearches : [];
     const locationExists = updatedSearches.filter(
-      (data) => data.display_name === location.display_name
+      (data) => data.place_id === location.place_id
     ).length;
 
     if (locationExists) {

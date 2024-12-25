@@ -4,6 +4,7 @@ export type Coordinates = {
 };
 
 export type Location = {
+  place_id: number;
   display_name: string;
   lon: string;
   lat: string;

@@ -67,7 +67,7 @@ export const AppContextProvider = ({
     updatedSearches = updatedSearches.filter((data) => !isEmpty(data));
     updatedSearches.push(location);
 
-    setSearches(updatedSearches);
+    setSearches(updatedSearches.reverse().slice());
     setRecentSearches(updatedSearches);
   }, [location]);
 

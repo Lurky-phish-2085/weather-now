@@ -4,8 +4,8 @@ import debounce from "lodash.debounce";
 import "material-dynamic-colors";
 import { ChangeEvent, useMemo, useState } from "react";
 import { searchLocations } from "../api/geocodingApi";
-import { Location } from "../types";
 import { useAppContext } from "../Contexts/hooks";
+import { Location } from "../types";
 
 function SearchInput() {
   const { selectLocation } = useAppContext();
@@ -72,19 +72,14 @@ function SearchInput() {
               <></>
             )}
             {data ? (
-              data.map((location, index) => (
-                <a
+              data.map((location) => (
+                <SearchInputItem
+                  key={location.place_id}
                   onClick={() => handleLocationSelect(location)}
-                  key={index}
-                  className="row"
-                >
-                  <i>location_on</i>
-                  <div className="column">
-                    <strong>{location.display_name}</strong>
-                    <div>latitude: {location.lat}</div>
-                    <div>longitude: {location.lon}</div>
-                  </div>
-                </a>
+                  displayName={location.display_name}
+                  latitude={location.lat}
+                  longitude={location.lon}
+                />
               ))
             ) : (
               <></>
@@ -93,6 +88,33 @@ function SearchInput() {
         </button>
       )}
     </>
+  );
+}
+
+type SearchInputItemProps = {
+  key?: string | number;
+  displayName: string;
+  latitude: string | number;
+  longitude: string | number;
+  onClick?: () => void;
+};
+
+function SearchInputItem({
+  key,
+  displayName,
+  latitude,
+  longitude,
+  onClick,
+}: SearchInputItemProps) {
+  return (
+    <a key={key} onClick={() => onClick && onClick()} className="row">
+      <i>location_on</i>
+      <div className="column">
+        <strong>{displayName}</strong>
+        <div>latitude: {latitude}</div>
+        <div>longitude: {longitude}</div>
+      </div>
+    </a>
   );
 }
 

@@ -10,6 +10,7 @@ type AppContextType = {
   location: Location;
   selectLocation: (location: Location) => void;
   searches: Location[];
+  clearSearches: () => void;
   temperatureUnit: TemperatureUnits;
   switchTempUnit: () => void;
   theme: string;
@@ -49,9 +50,13 @@ export const AppContextProvider = ({
   );
 
   const [searches, setSearches] = useState(recentSearches);
+  const clearSearches = () => {
+    setSearches([]);
+    setRecentSearches([]);
+  };
 
   useEffect(() => {
-    if (!location) {
+    if (isEmpty(location)) {
       return;
     }
 
@@ -63,10 +68,11 @@ export const AppContextProvider = ({
     if (locationExists) {
       return;
     }
+
     updatedSearches = updatedSearches.filter((data) => !isEmpty(data));
     updatedSearches.push(location);
 
-    setSearches(updatedSearches);
+    setSearches(updatedSearches.reverse().slice());
     setRecentSearches(updatedSearches);
   }, [location]);
 
@@ -112,6 +118,7 @@ export const AppContextProvider = ({
         location,
         selectLocation,
         searches,
+        clearSearches,
         temperatureUnit,
         switchTempUnit,
         theme,

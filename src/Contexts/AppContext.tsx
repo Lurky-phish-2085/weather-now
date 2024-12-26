@@ -51,7 +51,7 @@ export const AppContextProvider = ({
   const [searches, setSearches] = useState(recentSearches);
 
   useEffect(() => {
-    if (!location) {
+    if (isEmpty(location)) {
       return;
     }
 
@@ -63,6 +63,7 @@ export const AppContextProvider = ({
     if (locationExists) {
       return;
     }
+
     updatedSearches = updatedSearches.filter((data) => !isEmpty(data));
     updatedSearches.push(location);
 

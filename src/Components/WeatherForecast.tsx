@@ -6,6 +6,7 @@ import { getCapitalCityOf } from "../api/countryApi";
 import { searchLocations } from "../api/geocodingApi";
 import { getCountryByIP } from "../api/ipToCountryApi";
 import { getWeatherForecast } from "../api/weatherApi";
+import { getWMOCodeInterpretation } from "../api/wmoInterpretApi";
 
 function WeatherForecast() {
   const { location, selectLocation, temperatureUnit } = useAppContext();
@@ -50,6 +51,19 @@ function WeatherForecast() {
     setInitialLocation(countryOfIP.data.country);
   }, [countryOfIP.data]);
 
+  const wmoCodeInterpretation = useQuery({
+    queryKey: ["wmo-code-interpretation", data?.current.weather_code],
+    queryFn: () =>
+      getWMOCodeInterpretation(data ? data?.current.weather_code : -1),
+    enabled: data && !isEmpty(data),
+  });
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: ["wmo-code-interpretation", data?.current.weather_code],
+    });
+  }, [location, data]);
+
   return (
     <>
       {isEmpty(location) ? (
@@ -61,50 +75,66 @@ function WeatherForecast() {
       )}
       {data ? (
         <>
-          <p>
-            <strong>Weather at: {location.display_name}</strong>
-          </p>
-          <p>
-            <strong>NOW:</strong>
-          </p>
-          <hr />
-          <p>
-            <strong>
-              TEMP: {data.current.temperature_2m}
-              {data.current_units.temperature_2m}
-            </strong>
-          </p>
-
-          <p>
-            <strong>
-              Feels like: {data.current.apparent_temperature}
-              {data.current_units.apparent_temperature}
-            </strong>
-          </p>
-
-          <p>
-            <strong>WMO Code: {data.current.weather_code}</strong>
-          </p>
-          <p>
-            <strong>
-              Precip: {data.current.precipitation}
-              <span>&thinsp;</span>
-              {data.current_units.precipitation}
-            </strong>
-          </p>
-          <p>
-            <strong>
-              Humidity: {data.current.relative_humidity_2m}
-              {data.current_units.relative_humidity_2m}
-            </strong>
-          </p>
-          <p>
-            <strong>
-              Wind Speed: {data.current.wind_speed_10m}
-              <span>&thinsp;</span>
-              {data.current_units.wind_speed_10m}
-            </strong>
-          </p>
+          <div className="grid">
+            <div className="s6">
+              <h4>Weather at:</h4>
+              <div className="large-text">{location.display_name}</div>
+            </div>
+            <div className="s6 right-align">
+              <h4>NOW</h4>
+            </div>
+          </div>
+          <hr className="small" />
+          <div className="grid">
+            <div className="s6">
+              <h1>
+                {data.current.temperature_2m}
+                <span>&thinsp;</span>
+                {data.current_units.temperature_2m}
+              </h1>
+              <div>
+                <div>
+                  Feels Like: {data.current.apparent_temperature}
+                  {data.current_units.apparent_temperature}
+                </div>
+                <div>
+                  Precipitation: {data.current.precipitation}
+                  <span>&thinsp;</span>
+                  {data.current_units.precipitation}
+                </div>
+                <div>
+                  Humidity: {data.current.relative_humidity_2m}
+                  {data.current_units.relative_humidity_2m}
+                </div>
+                <div>
+                  Wind Speed: {data.current.wind_speed_10m}
+                  <span>&thinsp;</span>
+                  {data.current_units.wind_speed_10m}
+                </div>
+              </div>
+            </div>
+            <div className="s6 right-align">
+              <h4>
+                {
+                  wmoCodeInterpretation.data?.[
+                    data.current.is_day ? "day" : "night"
+                  ].description
+                }
+              </h4>
+              <img
+                src={
+                  wmoCodeInterpretation.data?.[
+                    data.current.is_day ? "day" : "night"
+                  ].image
+                }
+                alt={
+                  wmoCodeInterpretation.data?.[
+                    data.current.is_day ? "day" : "night"
+                  ].description
+                }
+              />
+            </div>
+          </div>
         </>
       ) : (
         <></>

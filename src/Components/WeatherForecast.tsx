@@ -6,6 +6,7 @@ import { getCapitalCityOf } from "../api/countryApi";
 import { searchLocations } from "../api/geocodingApi";
 import { getCountryByIP } from "../api/ipToCountryApi";
 import { getWeatherForecast } from "../api/weatherApi";
+import { getWMOCodeInterpretation } from "../api/wmoInterpretApi";
 
 function WeatherForecast() {
   const { location, selectLocation, temperatureUnit } = useAppContext();
@@ -50,6 +51,19 @@ function WeatherForecast() {
     setInitialLocation(countryOfIP.data.country);
   }, [countryOfIP.data]);
 
+  const wmoCodeInterpretation = useQuery({
+    queryKey: ["wmo-code-interpretation", data?.current.weather_code],
+    queryFn: () =>
+      getWMOCodeInterpretation(data ? data?.current.weather_code : -1),
+    enabled: data && !isEmpty(data),
+  });
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: ["wmo-code-interpretation", data?.current.weather_code],
+    });
+  }, [location, data]);
+
   return (
     <>
       {isEmpty(location) ? (
@@ -83,7 +97,15 @@ function WeatherForecast() {
           </p>
 
           <p>
-            <strong>WMO Code: {data.current.weather_code}</strong>
+            <strong>
+              Weather Interpretation:
+              <span>&thinsp;</span>
+              {
+                wmoCodeInterpretation.data?.[
+                  data.current.is_day ? "day" : "night"
+                ].description
+              }
+            </strong>
           </p>
           <p>
             <strong>

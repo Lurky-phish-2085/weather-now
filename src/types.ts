@@ -49,3 +49,14 @@ export type CountryData = {
   capitalCity: string;
   code: string;
 };
+
+export type WMOCodeInterpretation = {
+  day: {
+    description: string;
+    image: string;
+  };
+  night: {
+    description: string;
+    image: string;
+  };
+};

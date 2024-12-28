@@ -69,69 +69,114 @@ function WeatherForecast() {
       {isEmpty(location) ? (
         <p>Use the search bar first to get started!</p>
       ) : isLoading ? (
-        <progress />
+        <>
+          <div className="grid">
+            <div className="s6">
+              <article>
+                <progress className="max" />
+                <h4>
+                  <span>&nbsp;</span>
+                </h4>
+              </article>
+            </div>
+            <div className="s4"></div>
+            <div className="s2 right-align">
+              <article>
+                <progress className="max" />
+                <h4>
+                  <span>&nbsp;</span>
+                </h4>
+              </article>
+            </div>
+          </div>
+          <div className="grid">
+            <div className="s4">
+              <article className="max">
+                <progress className="max" />
+                <h1>
+                  <span>&nbsp;</span>
+                </h1>
+              </article>
+            </div>
+            <div className="s7"></div>
+            <div className="s1 right-align">
+              <article>
+                <progress className="max" />
+                <h4>
+                  <span>&nbsp;</span>
+                </h4>
+              </article>
+              <article className="max">
+                <progress className="max" />
+                <span>&nbsp;</span>
+              </article>
+            </div>
+          </div>
+        </>
       ) : (
         <></>
       )}
       {data ? (
         <>
-          <div className="grid">
-            <div className="s6">
-              <h4>{location.display_name}</h4>
-            </div>
-            <div className="s6 right-align">
-              <h4>NOW</h4>
-            </div>
-          </div>
-          <hr className="small" />
-          <div className="grid">
-            <div className="s6">
-              <h1>
-                {data.current.temperature_2m}
-                <span>&thinsp;</span>
-                {data.current_units.temperature_2m}
-              </h1>
-              <div>
-                <div>
-                  Feels Like: {data.current.apparent_temperature}
-                  {data.current_units.apparent_temperature}
-                </div>
-                <div>
-                  Precipitation: {data.current.precipitation}
-                  <span>&thinsp;</span>
-                  {data.current_units.precipitation}
-                </div>
-                <div>
-                  Humidity: {data.current.relative_humidity_2m}
-                  {data.current_units.relative_humidity_2m}
-                </div>
-                <div>
-                  Wind Speed: {data.current.wind_speed_10m}
-                  <span>&thinsp;</span>
-                  {data.current_units.wind_speed_10m}
-                </div>
+          <div className="page bottom active">
+            <div className="grid">
+              <div className="s6">
+                <h4>{location.display_name}</h4>
+              </div>
+              <div className="s6 right-align">
+                <h4>NOW</h4>
               </div>
             </div>
-            <div className="s6 right-align">
-              <h4>
-                {
-                  wmoCodeInterpretation.data?.[
-                    data.current.is_day ? "day" : "night"
-                  ].description
-                }
-              </h4>
-              <img
-                src={
-                  wmoCodeInterpretation.data?.[
-                    data.current.is_day ? "day" : "night"
-                  ].image
-                }
-                alt={
-                  wmoCodeInterpretation.data?.[
-                    data.current.is_day ? "day" : "night"
-                  ].description
-                }
-              />
+            <hr className="small" />
+            <div className="grid">
+              <div className="s6">
+                <h1>
+                  {data.current.temperature_2m}
+                  <span>&thinsp;</span>
+                  {data.current_units.temperature_2m}
+                </h1>
+                <div>
+                  <div>
+                    Feels Like: {data.current.apparent_temperature}
+                    {data.current_units.apparent_temperature}
+                  </div>
+                  <div>
+                    Precipitation: {data.current.precipitation}
+                    <span>&thinsp;</span>
+                    {data.current_units.precipitation}
+                  </div>
+                  <div>
+                    Humidity: {data.current.relative_humidity_2m}
+                    {data.current_units.relative_humidity_2m}
+                  </div>
+                  <div>
+                    Wind Speed: {data.current.wind_speed_10m}
+                    <span>&thinsp;</span>
+                    {data.current_units.wind_speed_10m}
+                  </div>
+                </div>
+              </div>
+              <div className="s6 right-align">
+                <h4>
+                  {
+                    wmoCodeInterpretation.data?.[
+                      data.current.is_day ? "day" : "night"
+                    ].description
+                  }
+                </h4>
+                <img
+                  src={
+                    wmoCodeInterpretation.data?.[
+                      data.current.is_day ? "day" : "night"
+                    ].image
+                  }
+                  alt={
+                    wmoCodeInterpretation.data?.[
+                      data.current.is_day ? "day" : "night"
+                    ].description
+                  }
+                />
+              </div>
             </div>
           </div>
         </>

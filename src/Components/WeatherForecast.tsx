@@ -77,8 +77,7 @@ function WeatherForecast() {
         <>
           <div className="grid">
             <div className="s6">
-              <h4>Weather at:</h4>
-              <div className="large-text">{location.display_name}</div>
+              <h4>{location.display_name}</h4>
             </div>
             <div className="s6 right-align">
               <h4>NOW</h4>

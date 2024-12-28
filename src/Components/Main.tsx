@@ -4,7 +4,9 @@ function Main() {
   return (
     <>
       <main className="responsive">
-        <WeatherForecast />
+        <div className="padding">
+          <WeatherForecast />
+        </div>
       </main>
     </>
   );

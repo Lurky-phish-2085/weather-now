@@ -11,9 +11,7 @@ import { Location } from "../types";
 function SearchInput() {
   const { selectLocation, searches, clearSearches } = useAppContext();
 
-  const [searchInputOpen, setSearchInputOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
-
   const [clearSearchDialogOpen, setClearSearchDialogOpen] = useState(false);
 
   const queryClient = useQueryClient();
@@ -32,104 +30,84 @@ function SearchInput() {
     []
   );
 
-  const handleOpen = () => setSearchInputOpen(true);
-  const handleClose = () => setSearchInputOpen(false);
+  const clearInput = () => setInputValue("");
+  const closeMenu = () => {
+    ui("#menu");
+  };
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
     updateLocation(inputValue);
   };
-  const handleClearInput = () => setInputValue("");
   const handleLocationSelect = (location: Location) => {
     selectLocation(location);
-    setInputValue("");
-    handleClose();
+    closeMenu();
+    setTimeout(() => {
+      clearInput();
+    }, 500);
   };
 
   return (
     <>
-      {!searchInputOpen ? (
-        <button className="circle transparent active" onClick={handleOpen}>
-          <i>search</i>
-        </button>
-      ) : (
-        <button className="circle transparent">
-          <menu className="max active">
-            <div className="field large prefix suffix no-margin fixed">
-              <a onClick={handleClose}>
-                <i>arrow_back</i>
-              </a>
-              <input
-                onChange={handleInputChange}
-                placeholder="Type to start searching for locations!"
-                value={inputValue}
-              />
-              <a onClick={handleClearInput}>
-                <i>close</i>
-              </a>
+      <button className="circle transparent">
+        <i>search</i>
+        <menu id="menu" className="max">
+          <div className="field large prefix suffix no-margin fixed">
+            <a onClick={closeMenu}>
+              <i>arrow_back</i>
+            </a>
+            <input
+              onChange={handleInputChange}
+              placeholder="Type to start searching for locations!"
+              value={inputValue}
+            />
+            <a onClick={clearInput}>
+              <i>close</i>
+            </a>
+          </div>
+          {isLoading ? (
+            <div className="center-align middle-align">
+              <progress />
             </div>
-            {isLoading ? (
-              <div className="center-align middle-align">
-                <progress />
-              </div>
-            ) : (
-              <></>
-            )}
-            {isEmpty(inputValue) && !isEmpty(searches) ? (
-              <>
-                <div className="center-align padding">
-                  <div className="row">
-                    <h6 className="small max">Recent Searches</h6>
-                    <button
-                      className="transparent circle"
-                      onClick={() => setClearSearchDialogOpen(true)}
-                    >
-                      <i className="large red-text">clear_all</i>
-                    </button>
-                  </div>
-                </div>
-                {searches.map((location) => (
-                  <SearchInputItem
-                    key={location.place_id}
-                    onClick={() => handleLocationSelect(location)}
-                    displayName={location.display_name}
-                    latitude={location.lat}
-                    longitude={location.lon}
-                  />
-                ))}
-              </>
-            ) : data ? (
-              data.map((location) => (
-                <SearchInputItem
-                  key={location.place_id}
-                  onClick={() => handleLocationSelect(location)}
-                  displayName={location.display_name}
-                  latitude={location.lat}
-                  longitude={location.lon}
-                />
-              ))
-            ) : (
-              <></>
-            )}
-          </menu>
-        </button>
-      )}
+          ) : (
+            <></>
+          )}
+          {isEmpty(inputValue) && !isEmpty(searches) ? (
+            <RecentSearchesMenu
+              searches={searches}
+              onSelect={(location) => handleLocationSelect(location)}
+              onClear={() => setClearSearchDialogOpen(true)}
+            />
+          ) : data ? (
+            <SearchResultsMenu
+              results={data}
+              onSelect={(location) => handleLocationSelect(location)}
+            />
+          ) : (
+            <></>
+          )}
+        </menu>
+      </button>
       {clearSearchDialogOpen ? (
-        <dialog className="active">
-          <h5>Clear Searches?</h5>
-          <div>This action cannot be undone.</div>
-          <nav className="right-align no-space">
-            <button className="transparent link">Cancel</button>
-            <button
-              onClick={() => {
-                clearSearches();
-                setClearSearchDialogOpen(false);
-              }}
-              className="transparent link"
-            >
-              Confirm
-            </button>
-          </nav>
-        </dialog>
+        <>
+          <div className="overlay active"></div>
+          <dialog className="active">
+            <h5>Clear Searches?</h5>
+            <div>This action cannot be undone.</div>
+            <nav className="right-align no-space">
+              <button className="transparent link">Cancel</button>
+              <button
+                onClick={() => {
+                  clearSearches();
+                  setClearSearchDialogOpen(false);
+                }}
+                className="transparent link"
+              >
+                Confirm
+              </button>
+            </nav>
+          </dialog>
+        </>
       ) : (
         <></>
       )}
@@ -137,19 +115,74 @@ function SearchInput() {
   );
 }
 
-type SearchInputItemProps = {
+type RecentSearchesMenuProps = {
+  searches: Location[];
+  onClear: () => void;
+  onSelect: (location: Location) => void;
+};
+
+function RecentSearchesMenu({
+  searches,
+  onClear,
+  onSelect,
+}: RecentSearchesMenuProps) {
+  return (
+    <>
+      <div className="center-align padding">
+        <div className="row">
+          <h6 className="small max">Recent Searches</h6>
+          <button className="transparent circle" onClick={onClear}>
+            <i className="large red-text">clear_all</i>
+          </button>
+        </div>
+      </div>
+      {searches.map((location) => (
+        <SearchMenuItem
+          key={location.place_id}
+          onClick={() => onSelect(location)}
+          displayName={location.display_name}
+          latitude={location.lat}
+          longitude={location.lon}
+        />
+      ))}
+    </>
+  );
+}
+
+type SearchResultsMenuProps = {
+  results: Location[];
+  onSelect: (location: Location) => void;
+};
+
+function SearchResultsMenu({ results, onSelect }: SearchResultsMenuProps) {
+  return (
+    <>
+      {results.map((location) => (
+        <SearchMenuItem
+          key={location.place_id}
+          onClick={() => onSelect(location)}
+          displayName={location.display_name}
+          latitude={location.lat}
+          longitude={location.lon}
+        />
+      ))}
+    </>
+  );
+}
+
+type SearchMenuItemProps = {
   displayName: string;
   latitude: string | number;
   longitude: string | number;
   onClick?: () => void;
 };
 
-function SearchInputItem({
+function SearchMenuItem({
   displayName,
   latitude,
   longitude,
   onClick,
-}: SearchInputItemProps) {
+}: SearchMenuItemProps) {
   return (
     <a onClick={() => onClick && onClick()} className="row">
       <i>location_on</i>

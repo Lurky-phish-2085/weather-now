@@ -32,16 +32,17 @@ function SearchInput() {
     []
   );
 
+  const clearInput = () => setInputValue("");
+
   const handleOpen = () => setSearchInputOpen(true);
   const handleClose = () => setSearchInputOpen(false);
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
     updateLocation(inputValue);
   };
-  const handleClearInput = () => setInputValue("");
   const handleLocationSelect = (location: Location) => {
     selectLocation(location);
-    setInputValue("");
+    clearInput();
     handleClose();
   };
 
@@ -53,7 +54,7 @@ function SearchInput() {
         </button>
       ) : (
         <button className="circle transparent">
-          <menu className="max active">
+          <menu className="max">
             <div className="field large prefix suffix no-margin fixed">
               <a onClick={handleClose}>
                 <i>arrow_back</i>
@@ -63,7 +64,7 @@ function SearchInput() {
                 placeholder="Type to start searching for locations!"
                 value={inputValue}
               />
-              <a onClick={handleClearInput}>
+              <a onClick={clearInput}>
                 <i>close</i>
               </a>
             </div>
@@ -75,38 +76,16 @@ function SearchInput() {
               <></>
             )}
             {isEmpty(inputValue) && !isEmpty(searches) ? (
-              <>
-                <div className="center-align padding">
-                  <div className="row">
-                    <h6 className="small max">Recent Searches</h6>
-                    <button
-                      className="transparent circle"
-                      onClick={() => setClearSearchDialogOpen(true)}
-                    >
-                      <i className="large red-text">clear_all</i>
-                    </button>
-                  </div>
-                </div>
-                {searches.map((location) => (
-                  <SearchInputItem
-                    key={location.place_id}
-                    onClick={() => handleLocationSelect(location)}
-                    displayName={location.display_name}
-                    latitude={location.lat}
-                    longitude={location.lon}
-                  />
-                ))}
-              </>
+              <RecentSearchesMenu
+                searches={searches}
+                onSelect={(location) => handleLocationSelect(location)}
+                onClear={() => setClearSearchDialogOpen(true)}
+              />
             ) : data ? (
-              data.map((location) => (
-                <SearchInputItem
-                  key={location.place_id}
-                  onClick={() => handleLocationSelect(location)}
-                  displayName={location.display_name}
-                  latitude={location.lat}
-                  longitude={location.lon}
-                />
-              ))
+              <SearchResultsMenu
+                results={data}
+                onSelect={(location) => handleLocationSelect(location)}
+              />
             ) : (
               <></>
             )}
@@ -137,19 +116,74 @@ function SearchInput() {
   );
 }
 
-type SearchInputItemProps = {
+type RecentSearchesMenuProps = {
+  searches: Location[];
+  onClear: () => void;
+  onSelect: (location: Location) => void;
+};
+
+function RecentSearchesMenu({
+  searches,
+  onClear,
+  onSelect,
+}: RecentSearchesMenuProps) {
+  return (
+    <>
+      <div className="center-align padding">
+        <div className="row">
+          <h6 className="small max">Recent Searches</h6>
+          <button className="transparent circle" onClick={onClear}>
+            <i className="large red-text">clear_all</i>
+          </button>
+        </div>
+      </div>
+      {searches.map((location) => (
+        <SearchMenuItem
+          key={location.place_id}
+          onClick={() => onSelect(location)}
+          displayName={location.display_name}
+          latitude={location.lat}
+          longitude={location.lon}
+        />
+      ))}
+    </>
+  );
+}
+
+type SearchResultsMenuProps = {
+  results: Location[];
+  onSelect: (location: Location) => void;
+};
+
+function SearchResultsMenu({ results, onSelect }: SearchResultsMenuProps) {
+  return (
+    <>
+      {results.map((location) => (
+        <SearchMenuItem
+          key={location.place_id}
+          onClick={() => onSelect(location)}
+          displayName={location.display_name}
+          latitude={location.lat}
+          longitude={location.lon}
+        />
+      ))}
+    </>
+  );
+}
+
+type SearchMenuItemProps = {
   displayName: string;
   latitude: string | number;
   longitude: string | number;
   onClick?: () => void;
 };
 
-function SearchInputItem({
+function SearchMenuItem({
   displayName,
   latitude,
   longitude,
   onClick,
-}: SearchInputItemProps) {
+}: SearchMenuItemProps) {
   return (
     <a onClick={() => onClick && onClick()} className="row">
       <i>location_on</i>

@@ -11,9 +11,7 @@ import { Location } from "../types";
 function SearchInput() {
   const { selectLocation, searches, clearSearches } = useAppContext();
 
-  const [searchInputOpen, setSearchInputOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
-
   const [clearSearchDialogOpen, setClearSearchDialogOpen] = useState(false);
 
   const queryClient = useQueryClient();
@@ -33,65 +31,63 @@ function SearchInput() {
   );
 
   const clearInput = () => setInputValue("");
+  const closeMenu = () => {
+    ui("#menu");
+  };
 
-  const handleOpen = () => setSearchInputOpen(true);
-  const handleClose = () => setSearchInputOpen(false);
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
     updateLocation(inputValue);
   };
   const handleLocationSelect = (location: Location) => {
     selectLocation(location);
-    clearInput();
-    handleClose();
+    closeMenu();
+    setTimeout(() => {
+      clearInput();
+    }, 500);
   };
 
   return (
     <>
-      {!searchInputOpen ? (
-        <button className="circle transparent active" onClick={handleOpen}>
-          <i>search</i>
-        </button>
-      ) : (
-        <button className="circle transparent">
-          <menu className="max">
-            <div className="field large prefix suffix no-margin fixed">
-              <a onClick={handleClose}>
-                <i>arrow_back</i>
-              </a>
-              <input
-                onChange={handleInputChange}
-                placeholder="Type to start searching for locations!"
-                value={inputValue}
-              />
-              <a onClick={clearInput}>
-                <i>close</i>
-              </a>
+      <button className="circle transparent">
+        <i>search</i>
+        <menu id="menu" className="max">
+          <div className="field large prefix suffix no-margin fixed">
+            <a onClick={closeMenu}>
+              <i>arrow_back</i>
+            </a>
+            <input
+              onChange={handleInputChange}
+              placeholder="Type to start searching for locations!"
+              value={inputValue}
+            />
+            <a onClick={clearInput}>
+              <i>close</i>
+            </a>
+          </div>
+          {isLoading ? (
+            <div className="center-align middle-align">
+              <progress />
             </div>
-            {isLoading ? (
-              <div className="center-align middle-align">
-                <progress />
-              </div>
-            ) : (
-              <></>
-            )}
-            {isEmpty(inputValue) && !isEmpty(searches) ? (
-              <RecentSearchesMenu
-                searches={searches}
-                onSelect={(location) => handleLocationSelect(location)}
-                onClear={() => setClearSearchDialogOpen(true)}
-              />
-            ) : data ? (
-              <SearchResultsMenu
-                results={data}
-                onSelect={(location) => handleLocationSelect(location)}
-              />
-            ) : (
-              <></>
-            )}
-          </menu>
-        </button>
-      )}
+          ) : (
+            <></>
+          )}
+          {isEmpty(inputValue) && !isEmpty(searches) ? (
+            <RecentSearchesMenu
+              searches={searches}
+              onSelect={(location) => handleLocationSelect(location)}
+              onClear={() => setClearSearchDialogOpen(true)}
+            />
+          ) : data ? (
+            <SearchResultsMenu
+              results={data}
+              onSelect={(location) => handleLocationSelect(location)}
+            />
+          ) : (
+            <></>
+          )}
+        </menu>
+      </button>
       {clearSearchDialogOpen ? (
         <dialog className="active">
           <h5>Clear Searches?</h5>

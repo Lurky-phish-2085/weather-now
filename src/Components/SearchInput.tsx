@@ -89,22 +89,25 @@ function SearchInput() {
         </menu>
       </button>
       {clearSearchDialogOpen ? (
-        <dialog className="active">
-          <h5>Clear Searches?</h5>
-          <div>This action cannot be undone.</div>
-          <nav className="right-align no-space">
-            <button className="transparent link">Cancel</button>
-            <button
-              onClick={() => {
-                clearSearches();
-                setClearSearchDialogOpen(false);
-              }}
-              className="transparent link"
-            >
-              Confirm
-            </button>
-          </nav>
-        </dialog>
+        <>
+          <div className="overlay active"></div>
+          <dialog className="active">
+            <h5>Clear Searches?</h5>
+            <div>This action cannot be undone.</div>
+            <nav className="right-align no-space">
+              <button className="transparent link">Cancel</button>
+              <button
+                onClick={() => {
+                  clearSearches();
+                  setClearSearchDialogOpen(false);
+                }}
+                className="transparent link"
+              >
+                Confirm
+              </button>
+            </nav>
+          </dialog>
+        </>
       ) : (
         <></>
       )}

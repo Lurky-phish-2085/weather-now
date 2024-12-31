@@ -7,6 +7,7 @@ import { searchLocations } from "../api/geocodingApi";
 import { getCountryByIP } from "../api/ipToCountryApi";
 import { getWeatherForecast } from "../api/weatherApi";
 import { getWMOCodeInterpretation } from "../api/wmoInterpretApi";
+import SkeletonScreen from "./SkeletonScreen";
 
 function WeatherForecast() {
   const { location, selectLocation, temperatureUnit } = useAppContext();
@@ -53,56 +54,7 @@ function WeatherForecast() {
 
   return (
     <>
-      {isEmpty(location) ? (
-        <p>Use the search bar first to get started!</p>
-      ) : isLoading ? (
-        <>
-          <div className="grid">
-            <div className="s6">
-              <article>
-                <progress className="max" />
-                <h4>
-                  <span>&nbsp;</span>
-                </h4>
-              </article>
-            </div>
-            <div className="s4"></div>
-            <div className="s2 right-align">
-              <article>
-                <progress className="max" />
-                <h4>
-                  <span>&nbsp;</span>
-                </h4>
-              </article>
-            </div>
-          </div>
-          <div className="grid">
-            <div className="s4">
-              <article className="max">
-                <progress className="max" />
-                <h1>
-                  <span>&nbsp;</span>
-                </h1>
-              </article>
-            </div>
-            <div className="s7"></div>
-            <div className="s1 right-align">
-              <article>
-                <progress className="max" />
-                <h4>
-                  <span>&nbsp;</span>
-                </h4>
-              </article>
-              <article className="max">
-                <progress className="max" />
-                <span>&nbsp;</span>
-              </article>
-            </div>
-          </div>
-        </>
-      ) : (
-        <></>
-      )}
+      {isEmpty(location) || isLoading ? <SkeletonScreen /> : <></>}
       {data ? (
         <>
           <div className="page bottom active">

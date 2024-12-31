@@ -7,6 +7,7 @@ import { ChangeEvent, useMemo, useState } from "react";
 import { searchLocations } from "../api/geocodingApi";
 import { useAppContext } from "../Contexts/hooks";
 import { Location } from "../types";
+import Modal from "./Modal";
 
 function SearchInput() {
   const { selectLocation, searches, clearSearches } = useAppContext();
@@ -88,29 +89,17 @@ function SearchInput() {
           )}
         </menu>
       </button>
-      {clearSearchDialogOpen ? (
-        <>
-          <div className="overlay active"></div>
-          <dialog className="active">
-            <h5>Clear Searches?</h5>
-            <div>This action cannot be undone.</div>
-            <nav className="right-align no-space">
-              <button className="transparent link">Cancel</button>
-              <button
-                onClick={() => {
-                  clearSearches();
-                  setClearSearchDialogOpen(false);
-                }}
-                className="transparent link"
-              >
-                Confirm
-              </button>
-            </nav>
-          </dialog>
-        </>
-      ) : (
-        <></>
-      )}
+      <Modal
+        id="clear-recent-searches-modal"
+        header="Clear recent searches?"
+        onClose={(confirmed) => {
+          setClearSearchDialogOpen(false);
+          if (confirmed) clearSearches();
+        }}
+        open={clearSearchDialogOpen}
+      >
+        <div>This action cannot be undone.</div>
+      </Modal>
     </>
   );
 }

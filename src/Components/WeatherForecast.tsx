@@ -17,12 +17,12 @@ function WeatherForecast() {
     queryFn: () => getWeatherForecast(location, { temperatureUnit }),
     enabled: !isEmpty(location),
   });
-
-  useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: ["weather-forecast-fetch", location],
-    });
-  }, [location, temperatureUnit, queryClient]);
+  const wmoCodeInterpretation = useQuery({
+    queryKey: ["wmo-code-interpretation", data?.current.weather_code],
+    queryFn: () =>
+      getWMOCodeInterpretation(data ? data?.current.weather_code : -1),
+    enabled: data && !isEmpty(data),
+  });
 
   const countryOfIP = useQuery({
     queryKey: ["ip-to-country"],
@@ -50,19 +50,6 @@ function WeatherForecast() {
 
     setInitialLocation(countryOfIP.data.country);
   }, [countryOfIP.data]);
-
-  const wmoCodeInterpretation = useQuery({
-    queryKey: ["wmo-code-interpretation", data?.current.weather_code],
-    queryFn: () =>
-      getWMOCodeInterpretation(data ? data?.current.weather_code : -1),
-    enabled: data && !isEmpty(data),
-  });
-
-  useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: ["wmo-code-interpretation", data?.current.weather_code],
-    });
-  }, [location, data]);
 
   return (
     <>

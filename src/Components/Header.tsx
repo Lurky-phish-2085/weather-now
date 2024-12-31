@@ -1,7 +1,7 @@
 import "beercss";
 import "material-dynamic-colors";
 import HeaderLogoLink from "./HeaderLogoLink";
-import HeaderMoreButton from "./HeaderMoreButton";
+import OptionsDropdown from "./OptionsDropdown";
 import SearchInput from "./SearchInput";
 
 function Header() {
@@ -10,7 +10,7 @@ function Header() {
       <nav>
         <HeaderLogoLink />
         <SearchInput />
-        <HeaderMoreButton />
+        <OptionsDropdown />
       </nav>
     </header>
   );

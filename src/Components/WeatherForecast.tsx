@@ -130,7 +130,12 @@ function ForecastOverview({
   units,
 }: ForecastOverviewProps) {
   const timeNow = dayjs().tz(timezone).format();
-  const day = date.isSame(timeNow, "day") ? "NOW" : date.format("MM-DD");
+
+  const displayDate = date.isSame(timeNow, "day")
+    ? "NOW"
+    : date.format("MM/DD");
+
+  const dayAndTime = date.format("dddd h:mm A");
 
   return (
     <div className="page bottom active">
@@ -139,7 +144,10 @@ function ForecastOverview({
           <h4>{locationName}</h4>
         </div>
         <div className="s6 right-align middle-align">
-          <h4>{day}</h4>
+          <div>
+            <h4>{displayDate}</h4>
+            <div>{dayAndTime}</div>
+          </div>
         </div>
       </div>
       <hr className="small" />

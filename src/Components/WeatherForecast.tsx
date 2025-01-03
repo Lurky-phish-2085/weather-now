@@ -129,9 +129,8 @@ function ForecastOverview({
   windSpeed,
   units,
 }: ForecastOverviewProps) {
-  const day = date.isSame(dayjs.tz(dayjs(), timezone), "day")
-    ? "NOW"
-    : date.format("ddd");
+  const timeNow = dayjs().tz(timezone).format();
+  const day = date.isSame(timeNow, "day") ? "NOW" : date.format("MM-DD");
 
   return (
     <div className="page bottom active">

@@ -1,15 +1,27 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import timezonePlug from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import isEmpty from "lodash.isempty";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppContext } from "../Contexts/hooks";
 import { getCapitalCityOf } from "../api/countryApi";
 import { searchLocations } from "../api/geocodingApi";
 import { getCountryByIP } from "../api/ipToCountryApi";
 import { getWeatherForecast } from "../api/weatherApi";
-import { getWMOCodeInterpretation } from "../api/wmoInterpretApi";
+import { ForecastOverviewData } from "../types";
+import ForecastOverview from "./ForecastOverview";
+import SkeletonScreen from "./SkeletonScreen";
+
+dayjs.extend(utc);
+dayjs.extend(timezonePlug);
+dayjs.extend(customParseFormat);
 
 function WeatherForecast() {
   const { location, selectLocation, temperatureUnit } = useAppContext();
+
+  const [overview, setOverview] = useState({} as ForecastOverviewData);
 
   const queryClient = useQueryClient();
   const { isLoading, data } = useQuery({
@@ -17,12 +29,6 @@ function WeatherForecast() {
     queryFn: () => getWeatherForecast(location, { temperatureUnit }),
     enabled: !isEmpty(location),
   });
-
-  useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: ["weather-forecast-fetch", location],
-    });
-  }, [location, temperatureUnit, queryClient]);
 
   const countryOfIP = useQuery({
     queryKey: ["ip-to-country"],
@@ -51,135 +57,38 @@ function WeatherForecast() {
     setInitialLocation(countryOfIP.data.country);
   }, [countryOfIP.data]);
 
-  const wmoCodeInterpretation = useQuery({
-    queryKey: ["wmo-code-interpretation", data?.current.weather_code],
-    queryFn: () =>
-      getWMOCodeInterpretation(data ? data?.current.weather_code : -1),
-    enabled: data && !isEmpty(data),
-  });
-
   useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: ["wmo-code-interpretation", data?.current.weather_code],
+    if (isEmpty(location) || !data) {
+      return;
+    }
+
+    setOverview({
+      locationName: location.display_name,
+      date: dayjs.utc(data.current.time),
+      timezone: data.timezone,
+      isDay: data.current.is_day,
+      temperature: data.current.temperature_2m,
+      feelsLikeTemp: data.current.apparent_temperature,
+      wmoCode: data.current.weather_code,
+      precipitation: data.current.precipitation,
+      humidity: data.current.relative_humidity_2m,
+      windSpeed: data.current.wind_speed_10m,
+      units: {
+        tempUnit: data.current_units.temperature_2m,
+        speedUnit: data.current_units.wind_speed_10m,
+      },
     });
-  }, [location, data]);
+  }, [data, location]);
 
   return (
     <>
-      {isEmpty(location) ? (
-        <p>Use the search bar first to get started!</p>
-      ) : isLoading ? (
-        <>
-          <div className="grid">
-            <div className="s6">
-              <article>
-                <progress className="max" />
-                <h4>
-                  <span>&nbsp;</span>
-                </h4>
-              </article>
-            </div>
-            <div className="s4"></div>
-            <div className="s2 right-align">
-              <article>
-                <progress className="max" />
-                <h4>
-                  <span>&nbsp;</span>
-                </h4>
-              </article>
-            </div>
-          </div>
-          <div className="grid">
-            <div className="s4">
-              <article className="max">
-                <progress className="max" />
-                <h1>
-                  <span>&nbsp;</span>
-                </h1>
-              </article>
-            </div>
-            <div className="s7"></div>
-            <div className="s1 right-align">
-              <article>
-                <progress className="max" />
-                <h4>
-                  <span>&nbsp;</span>
-                </h4>
-              </article>
-              <article className="max">
-                <progress className="max" />
-                <span>&nbsp;</span>
-              </article>
-            </div>
-          </div>
-        </>
+      {isEmpty(location) || isEmpty(overview) || isLoading ? (
+        <SkeletonScreen />
       ) : (
         <></>
       )}
-      {data ? (
-        <>
-          <div className="page bottom active">
-            <div className="grid">
-              <div className="s6">
-                <h4>{location.display_name}</h4>
-              </div>
-              <div className="s6 right-align">
-                <h4>NOW</h4>
-              </div>
-            </div>
-            <hr className="small" />
-            <div className="grid">
-              <div className="s6">
-                <h1>
-                  {data.current.temperature_2m}
-                  <span>&thinsp;</span>
-                  {data.current_units.temperature_2m}
-                </h1>
-                <div>
-                  <div>
-                    Feels Like: {data.current.apparent_temperature}
-                    {data.current_units.apparent_temperature}
-                  </div>
-                  <div>
-                    Precipitation: {data.current.precipitation}
-                    <span>&thinsp;</span>
-                    {data.current_units.precipitation}
-                  </div>
-                  <div>
-                    Humidity: {data.current.relative_humidity_2m}
-                    {data.current_units.relative_humidity_2m}
-                  </div>
-                  <div>
-                    Wind Speed: {data.current.wind_speed_10m}
-                    <span>&thinsp;</span>
-                    {data.current_units.wind_speed_10m}
-                  </div>
-                </div>
-              </div>
-              <div className="s6 right-align">
-                <h4>
-                  {
-                    wmoCodeInterpretation.data?.[
-                      data.current.is_day ? "day" : "night"
-                    ].description
-                  }
-                </h4>
-                <img
-                  src={
-                    wmoCodeInterpretation.data?.[
-                      data.current.is_day ? "day" : "night"
-                    ].image
-                  }
-                  alt={
-                    wmoCodeInterpretation.data?.[
-                      data.current.is_day ? "day" : "night"
-                    ].description
-                  }
-                />
-              </div>
-            </div>
-          </div>
-        </>
+      {data && !isEmpty(overview) ? (
+        <ForecastOverview data={overview} />
       ) : (
         <></>
       )}

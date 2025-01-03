@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export type Coordinates = {
   longitude: string;
   latitude: string;
@@ -58,5 +60,22 @@ export type WMOCodeInterpretation = {
   night: {
     description: string;
     image: string;
+  };
+};
+
+export type ForecastOverviewData = {
+  locationName: string;
+  date: Dayjs;
+  timezone: string;
+  temperature: number;
+  feelsLikeTemp: number;
+  wmoCode: number;
+  isDay: number;
+  precipitation: number;
+  humidity: number;
+  windSpeed: number;
+  units: {
+    tempUnit: string;
+    speedUnit: string;
   };
 };

@@ -20,7 +20,8 @@ const API_URL =
   "temperature_2m,relative_humidity_2m,wind_speed_10m," +
   "apparent_temperature,is_day,precipitation,weather_code" +
   "&hourly=" +
-  "temperature_2m";
+  "temperature_2m" +
+  "&timezone=auto";
 
 const WEATHER_UNITS_DEFAULTS: WeatherUnitOptions = {
   temperatureUnit: TemperatureUnits.CELSIUS,
@@ -44,13 +45,11 @@ export const getWeatherForecast = async (
   const precipitationUnit = `&precipitation_unit=${
     options.precipitationUnit || WEATHER_UNITS_DEFAULTS.precipitationUnit
   }`;
-  const timezone = "&timezone=auto";
 
   const response = await axios.get(
     `${API_URL}` +
       `${longitude}` +
       `${latitude}` +
-      `${timezone}` +
       `${temperatureUnit}` +
       `${windSpeedUnit}` +
       `${precipitationUnit}`

@@ -7,6 +7,7 @@ import isEmpty from "lodash.isempty";
 import { useEffect, useState } from "react";
 import { useAppContext } from "../Contexts/hooks";
 import { getCapitalCityOf } from "../api/countryApi";
+import { TemperatureUnits } from "../api/enums";
 import { searchLocations } from "../api/geocodingApi";
 import { getCountryByIP } from "../api/ipToCountryApi";
 import { getWeatherForecast } from "../api/weatherApi";
@@ -62,6 +63,15 @@ function WeatherForecast() {
       return;
     }
 
+    const tempUnitSymbol =
+      temperatureUnit === TemperatureUnits.CELSIUS ? "°C" : "°F";
+
+    if (data.current_units.temperature_2m !== tempUnitSymbol) {
+      queryClient.invalidateQueries({
+        queryKey: ["weather-forecast-fetch", location],
+      });
+    }
+
     setOverview({
       locationName: location.display_name,
       date: dayjs.utc(data.current.time),
@@ -78,7 +88,7 @@ function WeatherForecast() {
         speedUnit: data.current_units.wind_speed_10m,
       },
     });
-  }, [data, location]);
+  }, [data, location, temperatureUnit]);
 
   return (
     <>

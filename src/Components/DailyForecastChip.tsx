@@ -6,6 +6,7 @@ import utc from "dayjs/plugin/utc";
 import isEmpty from "lodash.isempty";
 import { getWMOCodeInterpretation } from "../api/wmoInterpretApi";
 import { ForecastOverviewData } from "../types";
+import scrollToTop from "./utils/scrollToTop";
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlug);
@@ -42,13 +43,18 @@ function DailyForecastChip({
   const tempMax = `${temperatureMax}${units.tempUnit}`;
   const tempMin = `${temperatureMin}${units.tempUnit}`;
 
+  const articleClassNames = selected
+    ? "center-align middle-align fill"
+    : "center-align middle-align";
+
   const handleClick = () => {
     onClick(data);
+    scrollToTop();
   };
 
   return (
     <div className="page bottom active">
-      <article className="l center-align middle-align">
+      <article id="article" className={`l ${articleClassNames}`}>
         <a onClick={handleClick}>
           <div>
             <h6>{displayDateLarge}</h6>
@@ -58,12 +64,13 @@ function DailyForecastChip({
               alt={interpretationImgAlt}
             />
             <div className="large-text">
-              <strong>{tempMax}</strong> / {tempMin}
+              <strong>{temperatureMax}</strong> / {temperatureMin}
+              {units.tempUnit}
             </div>
           </div>
         </a>
       </article>
-      <article className="m">
+      <article className={`m ${articleClassNames}`}>
         <a onClick={handleClick}>
           <div className="grid">
             <div className="s6 center-align middle-align">
@@ -86,7 +93,7 @@ function DailyForecastChip({
           </div>
         </a>
       </article>
-      <article className="s">
+      <article className={`s ${articleClassNames}`}>
         <a onClick={handleClick}>
           <div className="grid">
             <div className="s4 middle-align">

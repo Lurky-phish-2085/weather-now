@@ -23,12 +23,16 @@ dayjs.extend(customParseFormat);
 function WeatherForecast() {
   const { location, selectLocation, temperatureUnit } = useAppContext();
 
-  const [currentOverview, setCurrentOverview] = useState(
+  const [currentWeatherOverview, setCurrentWeatherOverview] = useState(
     {} as ForecastOverviewData
   );
-  const [selectedOverview, setSelectedOverview] = useState(
+  const [selectedDayOverview, setSelectedDayOverview] = useState(
     {} as ForecastOverviewData
   );
+  const [forecastOverviewDisplay, setForecastOverviewDisplay] = useState(
+    currentWeatherOverview
+  );
+
   const [dailyForecastOverview, setDailyForecastOverview] = useState(
     [] as ForecastOverviewData[]
   );
@@ -81,7 +85,7 @@ function WeatherForecast() {
       });
     }
 
-    setSelectedOverview({} as ForecastOverviewData);
+    setSelectedDayOverview({} as ForecastOverviewData);
 
     const currentPrecipProbability = (): number => {
       const currentTime = dayjs.utc(data.current.time);
@@ -91,7 +95,8 @@ function WeatherForecast() {
 
       return data.hourly.precipitation_probability[index];
     };
-    setCurrentOverview({
+
+    const currentWeatherForecast = {
       locationName: location.display_name,
       date: dayjs.utc(data.current.time),
       timezone: data.timezone,
@@ -112,7 +117,9 @@ function WeatherForecast() {
         tempUnit: data.current_units.temperature_2m,
         speedUnit: data.current_units.wind_speed_10m,
       },
-    });
+    };
+    setCurrentWeatherOverview(currentWeatherForecast);
+    setForecastOverviewDisplay(currentWeatherForecast);
 
     const maxHumidity = (date: Dayjs): number => {
       const hourlyHumidityIndices: number[] = data.hourly.time
@@ -158,31 +165,28 @@ function WeatherForecast() {
   }, [data, location, temperatureUnit]);
 
   const handleDailyForecastSelect = (selected: ForecastOverviewData) => {
-    if (selected.date.isSame(currentOverview.date, "day")) {
-      setSelectedOverview({} as ForecastOverviewData);
+    if (selected.date.isSame(currentWeatherOverview.date, "day")) {
+      setForecastOverviewDisplay(currentWeatherOverview);
       return;
     }
 
-    setSelectedOverview(selected);
+    setSelectedDayOverview(selected);
+    setForecastOverviewDisplay(selected);
   };
 
   return (
     <>
-      {isEmpty(location) || isEmpty(currentOverview) || isLoading ? (
+      {isEmpty(location) || isEmpty(currentWeatherOverview) || isLoading ? (
         <SkeletonScreen />
       ) : (
         <></>
       )}
-      {data && !isEmpty(currentOverview) ? (
+      {data && !isEmpty(currentWeatherOverview) ? (
         <>
-          {isEmpty(selectedOverview) ? (
-            <ForecastOverview data={currentOverview} />
-          ) : (
-            <ForecastOverview data={selectedOverview} />
-          )}
+          <ForecastOverview data={forecastOverviewDisplay} />
           <DailyForecasts
             onSelect={(forecast) => handleDailyForecastSelect(forecast)}
-            selected={currentOverview}
+            selected={forecastOverviewDisplay}
             data={dailyForecastOverview}
           />
         </>

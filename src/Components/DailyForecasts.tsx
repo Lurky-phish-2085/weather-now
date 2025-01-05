@@ -1,5 +1,5 @@
 import { Dayjs } from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ForecastOverviewData } from "../types";
 import DailyForecastChip from "./DailyForecastChip";
 
@@ -13,6 +13,11 @@ function DailyForecasts({ data, selected, onSelect }: DailyForecastsProps) {
   const [selectedForecast, setSelectedForecast] = useState(
     selected ? selected : ({} as ForecastOverviewData)
   );
+
+  useEffect(() => {
+    if (!selected) return;
+    setSelectedForecast(selected);
+  }, [selected]);
 
   const isDateEqualTo = (date: Dayjs): boolean => {
     if (!selectedForecast.date) {

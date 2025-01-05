@@ -131,6 +131,15 @@ function WeatherForecast() {
     );
   }, [data, location, temperatureUnit]);
 
+  const handleDailyForecastSelect = (selected: ForecastOverviewData) => {
+    if (selected.date.isSame(currentOverview.date, "day")) {
+      setSelectedOverview({} as ForecastOverviewData);
+      return;
+    }
+
+    setSelectedOverview(selected);
+  };
+
   return (
     <>
       {isEmpty(location) || isEmpty(currentOverview) || isLoading ? (
@@ -146,7 +155,7 @@ function WeatherForecast() {
             <ForecastOverview data={selectedOverview} />
           )}
           <DailyForecasts
-            onSelect={(data) => setSelectedOverview(data)}
+            onSelect={(forecast) => handleDailyForecastSelect(forecast)}
             selected={currentOverview}
             data={dailyForecastOverview}
           />

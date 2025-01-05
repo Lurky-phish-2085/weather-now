@@ -44,7 +44,7 @@ function DailyForecastChip({
   const tempMin = `${temperatureMin}${units.tempUnit}`;
 
   const articleClassNames = selected
-    ? "center-align middle-align fill"
+    ? "center-align middle-align tertiary-container"
     : "center-align middle-align";
 
   const handleClick = () => {

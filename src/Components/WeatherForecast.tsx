@@ -81,6 +81,7 @@ function WeatherForecast() {
       });
     }
 
+    setSelectedOverview({} as ForecastOverviewData);
     setCurrentOverview({
       locationName: location.display_name,
       date: dayjs.utc(data.current.time),

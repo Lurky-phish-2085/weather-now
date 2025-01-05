@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import timezonePlug from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
@@ -83,7 +83,7 @@ function WeatherForecast() {
 
     setSelectedOverview({} as ForecastOverviewData);
 
-    const currentPrecipProbability = () => {
+    const currentPrecipProbability = (): number => {
       const currentTime = dayjs.utc(data.current.time);
       const index = data.hourly.time.findIndex((time) =>
         dayjs.utc(time).isSame(currentTime, "hour")
@@ -113,6 +113,22 @@ function WeatherForecast() {
         speedUnit: data.current_units.wind_speed_10m,
       },
     });
+
+    const maxHumidity = (date: Dayjs): number => {
+      const hourlyHumidityIndices: number[] = data.hourly.time
+        .map((time, index) => {
+          return dayjs.utc(time).isSame(date, "date") ? index : -1;
+        })
+        .filter((index) => index !== -1);
+
+      const hourlyHumidity: number[] = hourlyHumidityIndices.map(
+        (hourIndex) => {
+          return data.hourly.relative_humidity_2m[hourIndex];
+        }
+      );
+
+      return Math.max(...hourlyHumidity);
+    };
     setDailyForecastOverview(
       data.daily.time.map((date, index) => {
         return {
@@ -129,7 +145,7 @@ function WeatherForecast() {
           wmoCode: data.daily.weather_code[index],
           precipitation: data.daily.precipitation_probability_max[index],
           precipitationMax: data.daily.precipitation_probability_max[index],
-          humidity: 0,
+          humidity: maxHumidity(dayjs.tz(date, data.timezone)),
           windSpeed: data.daily.wind_speed_10m_max[index],
           windSpeedMax: data.daily.wind_speed_10m_max[index],
           units: {

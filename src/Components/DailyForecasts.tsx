@@ -5,12 +5,13 @@ import DailyForecastChip from "./DailyForecastChip";
 
 type DailyForecastsProps = {
   data: ForecastOverviewData[];
+  selected?: ForecastOverviewData;
   onSelect: (forecast: ForecastOverviewData) => void;
 };
 
-function DailyForecasts({ data, onSelect }: DailyForecastsProps) {
+function DailyForecasts({ data, selected, onSelect }: DailyForecastsProps) {
   const [selectedForecast, setSelectedForecast] = useState(
-    {} as ForecastOverviewData
+    selected ? selected : ({} as ForecastOverviewData)
   );
 
   const isDateEqualTo = (date: Dayjs): boolean => {

@@ -82,6 +82,15 @@ function WeatherForecast() {
     }
 
     setSelectedOverview({} as ForecastOverviewData);
+
+    const currentPrecipProbability = () => {
+      const currentTime = dayjs.utc(data.current.time);
+      const index = data.hourly.time.findIndex((time) =>
+        dayjs.utc(time).isSame(currentTime, "hour")
+      );
+
+      return data.hourly.precipitation_probability[index];
+    };
     setCurrentOverview({
       locationName: location.display_name,
       date: dayjs.utc(data.current.time),
@@ -94,7 +103,7 @@ function WeatherForecast() {
       feelsLikeTempMax: 0,
       feelsLikeTempMin: 0,
       wmoCode: data.current.weather_code,
-      precipitation: data.current.precipitation,
+      precipitation: currentPrecipProbability(),
       precipitationMax: 0,
       humidity: data.current.relative_humidity_2m,
       windSpeed: data.current.wind_speed_10m,

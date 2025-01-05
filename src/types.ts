@@ -59,6 +59,18 @@ export type WeatherData = {
     precipitation_probability_max: number[];
     wind_speed_10m_max: number[];
   };
+  hourly_units: {
+    time: string;
+    temperature_2m: string;
+    relative_humidity_2m: string;
+    precipitation_probability: string;
+  };
+  hourly: {
+    time: string[];
+    temperature_2m: number[];
+    relative_humidity_2m: number[];
+    precipitation_probability: number[];
+  };
 };
 
 export type CountryIPData = {

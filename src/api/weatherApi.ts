@@ -25,7 +25,7 @@ const API_URL =
   "apparent_temperature_max,apparent_temperature_min," +
   "precipitation_probability_max,wind_speed_10m_max" +
   "&hourly=" +
-  "temperature_2m" +
+  "temperature_2m,relative_humidity_2m,precipitation_probability" +
   "&timezone=auto";
 
 const WEATHER_UNITS_DEFAULTS: WeatherUnitOptions = {

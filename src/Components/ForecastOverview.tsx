@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import timezonePlug from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
@@ -30,13 +30,16 @@ function ForecastOverview({ data }: ForecastOverviewProps) {
     units,
   } = data;
 
-  const timeNow = dayjs().tz(timezone).format();
+  const isDateEqual = (date1: Dayjs, date2: Dayjs) =>
+    date1.format("YYYY-MM-DD") === date2.format("YYYY-MM-DD");
 
-  const displayDate = date.isSame(timeNow, "day")
+  const timeNow = dayjs().tz(timezone);
+
+  const displayDate = isDateEqual(date, timeNow)
     ? "NOW"
     : date.format("MMM  DD");
 
-  const dayAndTime = date.isSame(timeNow, "date")
+  const dayAndTime = isDateEqual(date, timeNow)
     ? date.format("dddd h:mm A")
     : date.format("dddd");
 

@@ -36,7 +36,9 @@ function ForecastOverview({ data }: ForecastOverviewProps) {
     ? "NOW"
     : date.format("MMM  DD");
 
-  const dayAndTime = date.format("dddd h:mm A");
+  const dayAndTime = date.isSame(timeNow, "date")
+    ? date.format("dddd h:mm A")
+    : date.format("dddd");
 
   const wmoCodeInterpretation = useQuery({
     queryKey: ["wmo-code-interpretation", wmoCode],

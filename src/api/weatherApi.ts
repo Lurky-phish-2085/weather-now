@@ -19,6 +19,11 @@ const API_URL =
   "current=" +
   "temperature_2m,relative_humidity_2m,wind_speed_10m," +
   "apparent_temperature,is_day,precipitation,weather_code" +
+  "&forecast_days=8" +
+  "&daily=" +
+  "weather_code,temperature_2m_max,temperature_2m_min," +
+  "apparent_temperature_max,apparent_temperature_min," +
+  "precipitation_probability_max,wind_speed_10m_max" +
   "&hourly=" +
   "temperature_2m" +
   "&timezone=auto";

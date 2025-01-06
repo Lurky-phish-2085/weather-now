@@ -176,6 +176,7 @@ function WeatherForecast() {
 
   return (
     <>
+      {selectedDayOverview ? <></> : <></>}
       {isEmpty(location) || isEmpty(currentWeatherOverview) || isLoading ? (
         <SkeletonScreen />
       ) : (

@@ -2,7 +2,16 @@
 
 Check the weather right now!
 
-## Stuck on loading screen or having issues in general?
+## Known issues, workarounds, and fixes
+
+### Weather interpretation images is not visible
+
+The weather interpretation image pack used is not optimized for the theme styled
+by [Beer CSS](https://www.beercss.com).
+
+To fix this, better always the app in dark mode.
+
+### Stuck on loading screen or having issues in general?
 
 Please open the web app again without any browser extensions enabled. This app
 has an issue about getting blocked by certain privacy browser extensions (e.g

@@ -2,6 +2,10 @@
 
 Check the weather right now!
 
+## Try it!
+
+![https://lurky-phish-2085.github.io/weather-now](https://lurky-phish-2085.github.io/weather-now)
+
 ## Known issues, workarounds, and fixes
 
 ### Weather interpretation images are not visible

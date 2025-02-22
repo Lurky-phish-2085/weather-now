@@ -31,4 +31,4 @@ UBlock origin, Privacy Badger) due to api calls with the [Country API](https://c
 
 - [React](https://react.dev)
 - [TypeScript](https://www.typescriptlang.org)
-- [Beer CSS](https://www.beercss.com)
+- [Beer CSS](https://www.beercss.com) (MaterialUI styling implementation)
